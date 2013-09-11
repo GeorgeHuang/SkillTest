@@ -6,3 +6,9 @@
 *.csproj
 *.unityproj
 *.sln
+/FreeSkill.userprefs
+/Assembly-CSharp.csproj
+/Assembly-CSharp-vs.csproj
+/Assembly-CSharp.pidb
+/FreeSkill.sln
+/FreeSkill-csharp.sln
