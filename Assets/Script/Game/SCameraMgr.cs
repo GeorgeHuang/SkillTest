@@ -18,6 +18,7 @@ public class SCameraMgr : MonoSingleton<SCameraMgr> {
     
     }
 
+    #region public method
     public override void Init ()
     {
         base.Init ();
@@ -30,4 +31,15 @@ public class SCameraMgr : MonoSingleton<SCameraMgr> {
     {
         mCameraRootGO.transform.position = pos;
     }
+
+    public IEnumerator moveToPos(Vector3 pos)
+    {
+        while ( (pos - mCameraRootGO.transform.position).sqrMagnitude > 0.001f )
+        {
+            mCameraRootGO.transform.position = Vector3.Lerp(mCameraRootGO.transform.position, pos, 0.1f);
+            yield return null;
+        }
+        mCameraRootGO.transform.position = pos;
+    }
+    #endregion
 }

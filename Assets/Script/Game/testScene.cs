@@ -22,6 +22,9 @@ public class testScene : MonoBehaviour {
         Common.changGOParent(go, gameObject);
 
         moveObj.MoveTo(DungeonMgr.Instance.CurRoomPos());
+
+        //MainGameData init
+        MainGameData.MainRole = moveObj;
     }
     
     // Update is called once per frame

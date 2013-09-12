@@ -42,14 +42,10 @@ public class DRoom : MonoBehaviour {
 
     public void OnEnterRoom()
     {
-        //put camera at center
-        gameObject.SetActive(true);
-        SCameraMgr.Instance.SetCameraRootPos(CenterPos);
     }
 
     public void OnExitRoom()
     {
-        //gameObject.SetActive(false);
     }
     #endregion
 
@@ -61,13 +57,18 @@ public class DRoom : MonoBehaviour {
         return room;
     }
 
-    public void AlignmentOtherRoom(CollisionBehaviour otherCb)
+    public CollisionBehaviour AlignmentOtherRoom(CollisionBehaviour otherCb, Vector3 otherCenter)
     {
         int jointSize = mJointsDict.Count;
         CollisionBehaviour myAligCb = new List<CollisionBehaviour>(mJointsDict.Keys)[Random.Range(0, jointSize)];
-        print(CenterPos + "-" + myAligCb.transform.position + " + " + otherCb.transform.position);
+        Vector3 tarDir = -(otherCb.transform.position - otherCenter);
+        Vector3 curDir = myAligCb.transform.position - CenterPos;
+        float sign = Vector3.Dot(Vector3.up, Vector3.Cross(tarDir,curDir)) < 0 ? 1 : -1;
+        float angle = Vector3.Angle(tarDir,curDir);
+        transform.Rotate(0, angle * sign, 0);
         CenterPos = CenterPos - myAligCb.transform.position + otherCb.transform.position;
         transform.position = CenterPos;
+        return myAligCb;
     }
 
     public void JointRoom(CollisionBehaviour jointCb, DRoom jointRoom)
@@ -78,4 +79,13 @@ public class DRoom : MonoBehaviour {
         }
     }
     #endregion
+
+
+    void setTriggerEnable(bool enable)
+    {
+        foreach(CollisionBehaviour cb in mJointsDict.Keys)
+        {
+            cb.enabled = enable;
+        }
+    }
 }

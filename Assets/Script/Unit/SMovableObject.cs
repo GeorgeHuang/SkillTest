@@ -7,7 +7,9 @@ public class SMovableObject : MonoBehaviour {
 
     Transform mTrans;
     Vector3 mInputValue = Vector3.zero;
-    Vector3 mCurPos = Vector3.zero;
+    Vector3 mCurTempPos = Vector3.zero;
+
+    public Vector3 CurPos { get { return mTrans.position; } }
 
     #region MonoBehaviour
     void Awake()
@@ -35,6 +37,23 @@ public class SMovableObject : MonoBehaviour {
     {
         mTrans.position = pos;
     }
+
+    public void SetKinematic(bool val)
+    {
+        rigidbody.isKinematic = val;
+
+        if (collider != null)
+        {
+            collider.enabled = !val;
+        }
+
+        Collider[] array = gameObject.GetComponentsInChildren<Collider>();
+        foreach ( Collider cd in array )
+        {
+            cd.enabled = !val;
+        }
+
+    }
     #endregion
 
     #region private method
@@ -42,12 +61,12 @@ public class SMovableObject : MonoBehaviour {
     {
         if (mInputValue.magnitude < 0.1f)
             return;
-        mCurPos = mTrans.position;
+        mCurTempPos = mTrans.position;
 
-        mCurPos.x += mInputValue.x * mMoveRatio;
-        mCurPos.z += mInputValue.y * mMoveRatio;
+        mCurTempPos.x += mInputValue.x * mMoveRatio;
+        mCurTempPos.z += mInputValue.y * mMoveRatio;
 
-        mTrans.position = mCurPos;
+        mTrans.position = mCurTempPos;
     }
     #endregion
 }

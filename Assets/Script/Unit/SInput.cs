@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SInput : MonoBehaviour {
+public class SInput : MonoSingleton<SInput>{
 
     float x, y;
     SMovableObject mMoveObj;

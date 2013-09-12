@@ -12,6 +12,7 @@ public class DungeonMgr: MonoSingleton<DungeonMgr> {
     List<GameObject> mRoomList = new List<GameObject>();
 
     DRoom mCurRoom;
+    bool mRoleCurSceneEnable = false;
 
     #region Mono
     void Start () {
@@ -49,10 +50,16 @@ public class DungeonMgr: MonoSingleton<DungeonMgr> {
     #region private method
     void nextRoomTriggerEnter(CollisionBehaviour cb)
     {
-        Common.sysPrint(" nextRoomTriggerEnter ");
+        StartCoroutine(nextRoomCoroutine(cb));
+    }
+
+    IEnumerator nextRoomCoroutine(CollisionBehaviour cb)
+    {
+        SMovableObject mainRole = MainGameData.MainRole;
+        mainRole.enabled = false;
+        mainRole.SetKinematic(true);
         unregisterEvent();
         mCurRoom.OnExitRoom();
-
         //try get next room
         DRoom nextRoom = mCurRoom.GetJointRoom(cb);
         if (nextRoom == null)
@@ -61,13 +68,34 @@ public class DungeonMgr: MonoSingleton<DungeonMgr> {
             GameObject go = Instantiate(Rooms[0]) as GameObject;
             nextRoom = go.GetComponent<DRoom>();
             nextRoom.Init();
-            nextRoom.AlignmentOtherRoom(cb);
-            nextRoom.JointRoom(cb, nextRoom);
+            CollisionBehaviour nextCb = nextRoom.AlignmentOtherRoom(cb, mCurRoom.CenterPos);
+            mCurRoom.JointRoom(cb, nextRoom);
+            nextRoom.JointRoom(nextCb, mCurRoom);
         }
-
+        StartCoroutine(mainRoleCutScene(nextRoom.CenterPos));
+        yield return StartCoroutine(SCameraMgr.Instance.moveToPos(nextRoom.CenterPos));
+        while (mRoleCurSceneEnable == true)
+        {
+            yield return null;
+        }
         mCurRoom = nextRoom;
         registerEvent();
         mCurRoom.OnEnterRoom();
+        mainRole.SetKinematic(false);
+        mainRole.enabled = true;
+    }
+
+    IEnumerator mainRoleCutScene(Vector3 pos)
+    {
+        mRoleCurSceneEnable = true;
+        SMovableObject mainRole = MainGameData.MainRole;
+        while( (mainRole.CurPos - pos).sqrMagnitude > 0.01f )
+        {
+            mainRole.MoveTo(Vector3.Lerp(mainRole.CurPos, pos, 0.1f));
+            yield return null;
+        }
+        mainRole.MoveTo(pos);
+        mRoleCurSceneEnable = false;
     }
 
     void registerEvent()
