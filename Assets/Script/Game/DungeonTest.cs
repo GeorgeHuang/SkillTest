@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class testScene : MonoBehaviour {
+public class DungeonTest : MonoBehaviour {
 
-    public GameObject mMainRoleModel;
+    public GameObject MainRoleModel;
     public GameObject DungeonMgrPrefab;
 
     SInput mInput;
@@ -11,8 +11,10 @@ public class testScene : MonoBehaviour {
     // Use this for initialization
     void Start () {
         mInput = this.gameObject.AddComponent<SInput>();
-        SMovableObject moveObj = mMainRoleModel.AddComponent<SMovableObject>();
-        mInput.MoveObj = moveObj;
+        InputReceiver inputRecObj = MainRoleModel.AddComponent<InputReceiver>();
+        SMovableObject moveObj = MainRoleModel.AddComponent<SMovableObject>();
+        inputRecObj.MovableObject = moveObj;
+        mInput.InputReceiver = inputRecObj;
 
         //Camera init
         gameObject.AddComponent<SCameraMgr>();

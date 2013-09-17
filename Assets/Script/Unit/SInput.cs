@@ -3,11 +3,10 @@ using System.Collections;
 
 public class SInput : MonoSingleton<SInput>{
 
-    float x, y;
-    SMovableObject mMoveObj;
+    InputReceiver m_inputReceiver;
 
     #region GetSet
-    public SMovableObject MoveObj { get { return this.mMoveObj; } set { mMoveObj = value; } }
+    public InputReceiver InputReceiver { get { return this.m_inputReceiver; } set { m_inputReceiver = value; } }
     #endregion
 
     #region MonoBehaviour
@@ -18,11 +17,12 @@ public class SInput : MonoSingleton<SInput>{
     
     // Update is called once per frame
     void Update () {
-        x = Input.GetAxis("Horizontal");
-        y = Input.GetAxis("Vertical");
-        if (mMoveObj != null)
+        if (m_inputReceiver != null)
         {
-            mMoveObj.Move(x, y);
+            m_inputReceiver.MoveAxis.x = Input.GetAxis("Horizontal");
+            m_inputReceiver.MoveAxis.y = Input.GetAxis("Vertical");
+            m_inputReceiver.Attack = Input.GetButtonDown("Fire1");
+            m_inputReceiver.Block = Input.GetButtonDown("Fire2");
         }
     }
     #endregion
