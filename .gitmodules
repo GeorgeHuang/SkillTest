@@ -1,0 +1,3 @@
+[submodule "Assets/Script/CommonUnit"]
+	path = Assets/Script/CommonUnit
+	url = https://github.com/GeorgeHuang/CommonUnit.git
